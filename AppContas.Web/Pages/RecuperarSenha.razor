@@ -1,8 +1,10 @@
 ﻿@** Define a rota do componente *@
 @page "/recuperar-senha"
 
-@** Bibliotecas da página *@
-@using AppContas.Web.Requests
+@using AppContas.Web.Services
+
+@inject HttpClient Http
+@inject AuthService Auth
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
@@ -13,6 +15,13 @@
                     <p>Preencha os campos para recuperar sua senha.</p>
                 </div>
                 <hr />
+
+                <div class="text-center mb-2">
+                    <Loading IsLoading="isLoading">
+                        <strong class="text-success">@mensagemSucesso</strong>
+                        <strong class="text-danger">@mensagemErro</strong>
+                    </Loading>
+                </div>
 
                 @** Componente para criação de formulários *@
                 <EditForm Model="@request" OnValidSubmit="@OnSubmit">
@@ -54,9 +63,37 @@
     //declarar o objeto que será utilizado para capturar o formulário
     private RecuperarSenhaRequest request = new RecuperarSenhaRequest();
 
+    private string mensagemSucesso = string.Empty;
+    private string mensagemErro = string.Empty;
+
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Auth.Authorize(false);
+    }
+
     //método para capturar o evento de submit do formulário
     protected async Task OnSubmit()
     {
+        isLoading = true;
 
+        mensagemSucesso = string.Empty;
+        mensagemErro = string.Empty;
+
+        var response = await Http.PostAsJsonAsync("RecuperarSenha", request);
+        var content = await response.Content.ReadFromJsonAsync<RecuperarSenhaResponse>();
+
+        if (response.IsSuccessStatusCode)
+        {
+            mensagemSucesso = content.Mensagem;
+            request = new RecuperarSenhaRequest();
+        }
+        else
+        {
+            mensagemErro = content.Mensagem;
+        }
+
+        isLoading = false;
     }
 }

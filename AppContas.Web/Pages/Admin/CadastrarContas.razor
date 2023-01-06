@@ -114,6 +114,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await Auth.Authorize(true);
+
         var data = await Auth.GetData();
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data.AccessToken);
 

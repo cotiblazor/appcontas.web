@@ -81,6 +81,11 @@
     private string? mensagemErro;
     private bool isLoading;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await Auth.Authorize(false);
+    }
+
     //método para capturar o evento de submit do formulário
     protected async Task OnSubmit()
     {

@@ -18,7 +18,7 @@
             @if (isAuthenticated)
             {
                 <div class="me-3">
-                    @usuario.Nome
+                    <span class="oi oi-person me-2" aria-hidden="true"></span> @usuario.Nome
                 </div>
 
                 <button @onclick="Logout"

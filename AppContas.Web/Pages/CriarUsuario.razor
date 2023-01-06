@@ -1,8 +1,11 @@
 ﻿@** Define a rota do componente *@
 @page "/criar-usuario"
 
+@using AppContas.Web.Services
+
 @** Injeções de dependência *@
 @inject HttpClient Http
+@inject AuthService Auth
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
@@ -91,6 +94,11 @@
 
     //carregamento (flag)
     private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Auth.Authorize(false);
+    }
 
     //método para capturar o evento de submit do formulário
     protected async Task OnSubmit()
